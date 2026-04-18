@@ -1,0 +1,106 @@
+{
+  "entities": {
+    "Worker": {
+      "title": "Worker",
+      "description": "A worker in the salon who performs services.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string", "description": "Worker's full name" },
+        "chairNumber": { "type": "number", "description": "The chair number assigned to the worker" },
+        "commissionRate": { "type": "number", "description": "Percentage of the service price the worker receives" },
+        "isActive": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "chairNumber", "commissionRate"]
+    },
+    "Material": {
+      "title": "Material",
+      "description": "Cosmetic materials used in the salon.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "price": { "type": "number", "description": "Cost of the material" },
+        "stock": { "type": "number", "description": "Current quantity in stock" },
+        "unit": { "type": "string", "description": "e.g., ml, piece, gram" }
+      },
+      "required": ["name", "price", "stock"]
+    },
+    "Invoice": {
+      "title": "Invoice",
+      "description": "A record of a service provided to a customer.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "customerName": { "type": "string" },
+        "workerId": { "type": "string", "description": "ID of the worker who performed the service" },
+        "materialsUsed": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "materialId": { "type": "string" },
+              "materialName": { "type": "string" },
+              "quantity": { "type": "number" },
+              "priceAtTime": { "type": "number" }
+            }
+          }
+        },
+        "servicePrice": { "type": "number", "description": "Total price of the service (excluding materials if separated)" },
+        "totalAmount": { "type": "number", "description": "Total amount paid by the customer" },
+        "workerShare": { "type": "number", "description": "Calculated share for the worker" },
+        "profit": { "type": "number", "description": "Calculated profit for the salon" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["customerName", "workerId", "totalAmount", "workerShare", "profit", "timestamp"]
+    },
+    "Expense": {
+      "title": "Expense",
+      "description": "A record of a salon expense.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "description": { "type": "string" },
+        "amount": { "type": "number" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["description", "amount", "timestamp"]
+    },
+    "Payment": {
+      "title": "Payment",
+      "description": "A record of a payment made to a worker.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "workerId": { "type": "string" },
+        "amount": { "type": "number" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "type": { "type": "string", "enum": ["payment"] }
+      },
+      "required": ["workerId", "amount", "timestamp", "type"]
+    }
+  },
+  "firestore": {
+    "/workers/{workerId}": {
+      "schema": "Worker",
+      "description": "Collection of salon workers"
+    },
+    "/materials/{materialId}": {
+      "schema": "Material",
+      "description": "Collection of cosmetic materials"
+    },
+    "/invoices/{invoiceId}": {
+      "schema": "Invoice",
+      "description": "Collection of customer invoices"
+    },
+    "/expenses/{expenseId}": {
+      "schema": "Expense",
+      "description": "Collection of salon expenses"
+    },
+    "/payments/{paymentId}": {
+      "schema": "Payment",
+      "description": "Collection of worker payments"
+    }
+  }
+}
